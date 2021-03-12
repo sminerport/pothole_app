@@ -1,3 +1,5 @@
+import pandas as pd
+import sqlite3
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -30,5 +32,15 @@ def create_app():
     #blueprint for non-auth parts of app
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+    
+    con = sqlite3.connect(".\\project\\db.sqlite")
+    cur = con.cursor()
+    result = cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='DenverStreets';").fetchone()
+    
+    if result == None:
+        df = pd.read_csv(".\\project\\street_centerline.csv")
+        df.to_sql('DenverStreets', con)
+        df.columns = df.columns.str.strip()
+        con.close()
     
     return app
