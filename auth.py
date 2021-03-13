@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
-from .models import User
+from .models import User, Pothole, Equipment, RepairCrew
 from . import db
 
 auth = Blueprint('auth', __name__)
@@ -55,8 +55,39 @@ def login_post():
         return redirect(url_for('main.profile'))
     elif type=='Employee':
         login_user(user)
-        return redirect(url_for('main.employee'))
+        return redirect(url_for('auth.employee'))
         
+@auth.route('/employee')
+@login_required
+def employee():
+    
+    potholes = Pothole.query.filter_by(w_order=0).all()
+    
+    return render_template('employee.html', potholes=potholes)
+
+@auth.route('/_update_work_dropdown')
+def update_work_dropdown():
+    pothole_number = request.args.get('selected_class', type=str)
+    pothole_number = pothole_number.split("#",1)[1]
+    pothole_number = int(pothole_number[0])
+    
+    print(pothole_number)
+    
+    pothole = Pothole.query.get(pothole_number)
+    
+    print(pothole.streetNumber)
+    
+    streetNumber = pothole.streetNumber
+    streetName = pothole.streetName
+    zip = pothole.zip
+    
+    # html_string_selected = ''
+    # for row in rows:
+    #     html_string_selected += '<option values="{}">{}</option>'.format(row['zipleft'], row['zipleft'])
+    #     
+    # print(html_string_selected)
+        
+    return jsonify(streetNumber = streetNumber, streetName = streetName, zip = zip)
     
 
 @auth.route('/logout')

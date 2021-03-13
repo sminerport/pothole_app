@@ -40,6 +40,7 @@ def profile_post():
     location = request.form.get('location')
     size = int(request.form['answer'])
     priority = None
+    w_order = 0
     
     conn = get_db_connection()
     
@@ -77,30 +78,26 @@ def profile_post():
     elif size == 9 or size == 10:
         priority = 'Urgent'
         
+    print(current_user.id)
+    print(streetNumber)
+    print(streetName)
+    print(city)
+    print(state)
+    print(zipCode)
+    print(location)
+    print(district)
+    print(size)
+    print(priority)
 
-    conn.execute('INSERT INTO pothole (user_id, streetNumber, streetName, city, state, zip, location, district, size, priority) VALUES (?,?,?,?,?,?,?,?,?,?)',\
-                                                (current_user.id,\
-                                                streetNumber, \
-                                                streetName, \
-                                                city, \
-                                                state, \
-                                                zipCode, \
-                                                location, \
-                                                district, \
-                                                size, \
-                                                priority))
+    conn.execute('INSERT INTO pothole (user_id, streetNumber, streetName, city, state, \
+                 zip, location, district, size, priority, w_order) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+                (current_user.id,streetNumber,streetName,city,state,zipCode,location,district,size,priority,w_order))
+    
     conn.commit()
     conn.close()   
 
     return render_template('index.html')
 
-@main.route('/employee')
-@login_required
-def employee():
-    
-    conn = get_db_connection()
-    
-    return render_template('employee.html')
 
 @main.route('/_update_dropdown')
 def update_dropdown():

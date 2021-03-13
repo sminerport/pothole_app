@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+    Welcome to the work order page, {{ name }}!
+</h1>
+<div class="column is-full">
+    <h3 class="title">Create Work Orders</h3>
+    <form method="POST" action="/employee">
+        <div class="box">
+            <div class="field">
+                <label class="label has-text-left">Select Pothole</label>
+                <div class="control is-expanded">
+                    <div class="select is-fullwidth">
+                        <select name="pothole" id="all_classes">
+                            {% for hole in potholes %}
+                                <option value={{hole.id}}>Pothole #{{hole.id}}. Location: {{hole.streetNumber}} {{hole.streetName}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+			<div class="columns">
+				<div class="column">
+					<div class="field">
+						<label class="label has-text-left">Street Number</label>
+						<div class="control">
+							<input class="input" id="streetNumber" type="text" name="streetNumber" placeholder="{{potholes[0].streetNumber}}" readonly>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					<div class="field">
+						<label class="label has-text-left">Street Name</label>
+						<div class="control">
+							<input class="input" id="streetName" type="text" name="streetName" placeholder="{{potholes[0].streetName}}" readonly>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="columns">
+				<div class = "column">
+					<div class="field">
+						<label class="label has-text-left">City</label>
+						<div class="control">
+							<input class="input" name="city" type="text" placeholder="Denver" value="Denver" disabled>
+						</div>
+					</div>
+				</div>
+				<div class="column">    
+					<div class="field">
+						<label class="label has-text-left">State</label>
+						<div class="control">
+							<input class="input" name="state" type="text" placeholder="CO" value="CO" disabled>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					<div class="field">
+						<label class="label has-text-left">Zip</label>
+						<div class="control">
+							<input class="input" id="zip" name="zip" type="text" placeholder="{{potholes[0].zip}}" disabled>
+						</div>
+			
+					</div>
+				</div>
+			</div>            
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    $('#all_classes').change(function(){
+
+      $.getJSON('/_update_work_dropdown', {
+        selected_class: $('#all_classes option:selected').text()
+
+      }).success(function(data) {
+            $('#streetNumber').val(data.streetNumber);
+            $('#streetName').val(data.streetName);
+            $('#zip').val(data.zip);
+       });
+    });
+    $('#process_input').bind('click', function() {
+
+        $.getJSON('/_process_data', {
+            selected_class: $('#all_classes').val(),
+            selected_entry: $('#all_entries').val(),
+
+
+        }).success(function(data) {
+            $('#processed_results').text(data.random_text);
+        });
+      return false;
+
+    });
+  });
+</script>
+{% endblock %}
