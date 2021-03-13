@@ -24,10 +24,14 @@
                 </div>
             </div>
             <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Remember me
-                </label>
+                <div class="control is-expanded">
+                    <div class="select is-fullwidth is-large">
+                        <select name="loginType" id="loginType">
+                            <option value='Citizen'>Citizen</option>
+                            <option value='Employee'>Employee</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <button class="button is block is-info is-large is-fullwidth">Login</button>
         </form>

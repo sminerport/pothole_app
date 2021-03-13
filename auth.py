@@ -39,7 +39,7 @@ def login_post():
     
     email = request.form.get('email')
     password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
+    type = request.form.get('loginType')
     
     user = User.query.filter_by(email=email).first()
     
@@ -50,8 +50,13 @@ def login_post():
         return redirect(url_for('auth.login')) # if the user doesn't exist or password is wrong, reload the page
     
     # if the above check passes, then we know the user has the right credentials
-    login_user(user, remember=remember)
-    return redirect(url_for('main.profile')) 
+    if type=='Citizen':
+        login_user(user)
+        return redirect(url_for('main.profile'))
+    elif type=='Employee':
+        login_user(user)
+        return redirect(url_for('main.employee'))
+        
     
 
 @auth.route('/logout')
