@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import Table, Column, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from flask_login import UserMixin
@@ -45,9 +45,11 @@ class Equipment(db.Model):
     __tablename__ = 'equipment'
     id = db.Column(db.Integer, primary_key=True)
     equipment = db.Column(db.String(100))
+    costPerHour = db.Column(db.Float)
     
-    def __init__(self, equipment):
+    def __init__(self, equipment, costPerHour):
         self.equipment = equipment
+        self.costPerHour = costPerHour
         
 class WorkOrder(db.Model):
     __tablename__ = 'work_order'
@@ -58,5 +60,15 @@ class WorkOrder(db.Model):
     status = db.Column(db.String(100))
     fillerAmount = db.Column(db.Integer)
     cost=db.Column(db.Float)
+    
+    def __init__(self, pothole_id, repair_crew_id,
+                 hours, status, fillerAmount, cost):
+        self.pothole_id = pothole_id
+        self.repair_crew_id = repair_crew_id
+        self.hours = hours
+        self.status = status
+        self.fillerAmount = fillerAmount
+        self.cost = cost
+        
     
     

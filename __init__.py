@@ -42,38 +42,39 @@ def create_app():
         df.to_sql('DenverStreets', con)
         df.columns = df.columns.str.strip()
     
-    from .models import Equipment
-    from .models import RepairCrew
-    
-    with app.app_context():
-        db.create_all()
-        db.session.commit()
-        newEquipment1 = Equipment(equipment="Bobcat")
-        newEquipment2 = Equipment(equipment="Steam Roller")
-        newEquipment3 = Equipment(equipment="Patch Hand Roller")
-        newEquipment4 = Equipment(equipment="Bull Dozer")
-        newEquipment5 = Equipment(equipment="Dump Truck")
-        newEquipment6 = Equipment(equipment="Power Tamper")
-        newEquipment7 = Equipment(equipment="Pro-Patch Asphalt Patcher")
-        newEquipment8 = Equipment(equipment="Spray-Injection Machine")
-        db.session.add_all([newEquipment1, newEquipment2, newEquipment3, newEquipment4, newEquipment5,
-                        newEquipment6, newEquipment7, newEquipment8])
-        newRepair1 = RepairCrew(people=5)
-        newRepair2 = RepairCrew(people=10)
-        newRepair3 = RepairCrew(people=15)
-        newRepair4 = RepairCrew(people=20)
-        newRepair5 = RepairCrew(people=2)
-        newRepair6 = RepairCrew(people=3)
-        db.session.add_all([newRepair1,
-                            newRepair2,
-                            newRepair3,
-                            newRepair4,
-                            newRepair5,
-                            newRepair6])
-        db.session.commit()
-    
+    result = cur.execute("SELECT name from sqlite_master WHERE type='table' AND name='equipment';").fetchone()
+  
+    if result == None:
+        from .models import Equipment
+        from .models import RepairCrew
+        with app.app_context():
+            db.create_all()
+            #db.session.commit()
+            newEquipment1 = Equipment(equipment="Bobcat", costPerHour = 31.25)
+            newEquipment2 = Equipment(equipment="Steam Roller", costPerHour = 23.75)
+            newEquipment3 = Equipment(equipment="Patch Hand Roller", costPerHour = 10.00)
+            newEquipment4 = Equipment(equipment="Bull Dozer", costPerHour = 25.00)
+            newEquipment5 = Equipment(equipment="Dump Truck", costPerHour = 45.50)
+            newEquipment6 = Equipment(equipment="Power Tamper", costPerHour = 15.00)
+            newEquipment7 = Equipment(equipment="Pro-Patch Asphalt Patcher", costPerHour = 33.25)
+            newEquipment8 = Equipment(equipment="Spray-Injection Machine", costPerHour = 28.75)
+            db.session.add_all([newEquipment1, newEquipment2, newEquipment3, newEquipment4, newEquipment5,
+                            newEquipment6, newEquipment7, newEquipment8])
+            newRepair1 = RepairCrew(people=5)
+            newRepair2 = RepairCrew(people=10)
+            newRepair3 = RepairCrew(people=15)
+            newRepair4 = RepairCrew(people=20)
+            newRepair5 = RepairCrew(people=2)
+            newRepair6 = RepairCrew(people=3)
+            db.session.add_all([newRepair1,
+                                newRepair2,
+                                newRepair3,
+                                newRepair4,
+                                newRepair5,
+                                newRepair6])
+            db.session.commit()
+            
+    con.close()
 
-    
-    
     return app
 
